@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Enquiry API Test</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Enquiry API Test</h1>
+
+    <button onclick="callEnquiryAPI()">
+        Get Enquiries
+    </button>
+
+    <div id="status"></div>
+
+    <pre id="response">Response will appear here...</pre>
+
+    <script>
+
+        const API_URL =
+            "https://gbb4e16f60f7d6b-atpots01.adb.ap-hyderabad-1.oraclecloudapps.com/ords/maze/public/enquiry";
+
+        async function callEnquiryAPI() {
+
+            const status = document.getElementById("status");
+            const responseBox = document.getElementById("response");
+
+            status.textContent = "Calling API...";
+            responseBox.textContent = "";
+
+            try {
+
+                const response = await fetch(API_URL, {
+                    method: "GET",
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(
+                        `HTTP ${response.status} - ${response.statusText}`
+                    );
+                }
+
+                const data = await response.json();
+
+                status.textContent = "API call successful";
+
+                responseBox.textContent =
+                    JSON.stringify(data, null, 2);
+
+            } catch (error) {
+
+                status.textContent = "API call failed";
+
+                responseBox.textContent =
+                    "Error:\n\n" + error.message;
+
+                console.error(error);
+            }
+        }
+
+    </script>
+
+</body>
+</html>
