@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,48 +40,72 @@
 
     <h1>Enquiry API Test</h1>
 
-    <button onclick="callEnquiryAPI()">
-        Get Enquiries
+    <button onclick="submitEnquiry()">
+        Submit Enquiry
     </button>
 
     <div id="status"></div>
 
     <pre id="response">Response will appear here...</pre>
 
+
     <script>
 
         const API_URL =
             "https://gbb4e16f60f7d6b-atpots01.adb.ap-hyderabad-1.oraclecloudapps.com/ords/maze/public/enquiry";
 
-        async function callEnquiryAPI() {
+
+        async function submitEnquiry() {
 
             const status = document.getElementById("status");
             const responseBox = document.getElementById("response");
 
-            status.textContent = "Calling API...";
+            status.textContent = "Submitting enquiry...";
             responseBox.textContent = "";
+
+
+            const requestBody = {
+                name: "Akhil Scaria",
+                email: "john.doe@example.com",
+                phone: "+91 9876543210",
+                subject: "Product Enquiry",
+                message: "I would like to know more about your products and services."
+            };
+
 
             try {
 
                 const response = await fetch(API_URL, {
-                    method: "GET",
+
+                    method: "POST",
+
                     headers: {
-                        "Accept": "application/json"
-                    }
+                        "branch_code": "M-IND",
+                        "business_unit_code": "MIND-HO",
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(requestBody)
+
                 });
 
+
                 if (!response.ok) {
+
                     throw new Error(
                         `HTTP ${response.status} - ${response.statusText}`
                     );
+
                 }
 
-                const data = await response.json();
 
-                status.textContent = "API call successful";
+                const data = await response.text();
 
-                responseBox.textContent =
-                    JSON.stringify(data, null, 2);
+
+                status.textContent = "Enquiry submitted successfully";
+
+                responseBox.textContent = data;
+
 
             } catch (error) {
 
@@ -89,11 +114,14 @@
                 responseBox.textContent =
                     "Error:\n\n" + error.message;
 
-                console.error(error);
+                console.error("API Error:", error);
+
             }
+
         }
 
     </script>
 
 </body>
+
 </html>
